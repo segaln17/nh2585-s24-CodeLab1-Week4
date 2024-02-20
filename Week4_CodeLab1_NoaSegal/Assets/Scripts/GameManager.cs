@@ -38,53 +38,6 @@ public class GameManager : MonoBehaviour
         set
         {
             score = value;
-            
-            //check if the current score is a high score, and decide where to put it in the high score list:
-            if (isHighScore(score))
-            {
-                int highScoreSlot = -1;
-                //-1 so it includes slot 0 in the for loop
-                
-                //iterate through each slot in the list and check if the score is higher
-                //if it is higher, put it in that slot
-                for (int i = 0; i < HighScores.Count; i++)
-                {
-                    if (score > highScores[i])
-                    {
-                        highScoreSlot = i;
-                        break;
-                    }
-                }
-                
-                //put this value in the high scores list
-                highScores.Insert(highScoreSlot, score);
-                
-                //only keep the top 5 scores:
-                highScores = highScores.GetRange(0, 5);
-                
-                //set up the score text string, which starts empty so we can populate it and update it:
-                string scoreBoardText = "";
-                
-                //put each high score in the score text with a separator:
-                foreach (var highScore in highScores)
-                {
-                    scoreBoardText += highScore + "\n";
-                }
-                
-                //set the string equal to the score text:
-                highScoresString = scoreBoardText;
-                
-                
-                //check to see if the directory exists:
-                if (!Directory.Exists(Application.dataPath + FILE_DIR))
-                {
-                    Directory.CreateDirectory(Application.dataPath + FILE_DIR);
-                }
-                
-                
-                //write all the scores (in string form) to a text file to save:
-                File.WriteAllText(FILE_FULL_PATH, highScoresString);
-            }
         }
     }
     //SCENE MANAGER SETUP:
@@ -191,6 +144,7 @@ public class GameManager : MonoBehaviour
         {
             isInGame = false;
             SceneManager.LoadScene("EndScene");
+            SetHighScore();
         }
         
     }
@@ -209,5 +163,55 @@ public class GameManager : MonoBehaviour
 
         //default is false:
         return false;
+    }
+
+    void SetHighScore()
+    {
+        //check if the current score is a high score, and decide where to put it in the high score list:
+        if (isHighScore(score))
+        {
+            int highScoreSlot = -1;
+            //-1 so it includes slot 0 in the for loop
+                
+            //iterate through each slot in the list and check if the score is higher
+            //if it is higher, put it in that slot
+            for (int i = 0; i < HighScores.Count; i++)
+            {
+                if (score > highScores[i])
+                {
+                    highScoreSlot = i;
+                    break;
+                }
+            }
+                
+            //put this value in the high scores list
+            highScores.Insert(highScoreSlot, score);
+                
+            //only keep the top 5 scores:
+            highScores = highScores.GetRange(0, 5);
+                
+            //set up the score text string, which starts empty so we can populate it and update it:
+            string scoreBoardText = "";
+                
+            //put each high score in the score text with a separator:
+            foreach (var highScore in highScores)
+            {
+                scoreBoardText += highScore + "\n";
+            }
+                
+            //set the string equal to the score text:
+            highScoresString = scoreBoardText;
+                
+                
+            //check to see if the directory exists:
+            if (!Directory.Exists(Application.dataPath + FILE_DIR))
+            {
+                Directory.CreateDirectory(Application.dataPath + FILE_DIR);
+            }
+                
+                
+            //write all the scores (in string form) to a text file to save:
+            File.WriteAllText(FILE_FULL_PATH, highScoresString);
+        }
     }
 }
